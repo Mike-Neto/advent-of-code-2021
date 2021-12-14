@@ -17,6 +17,11 @@ fn main() {
         "Your final position is: {}",
         day_two_part_one("./data/day_two_data.txt").unwrap()
     );
+
+    println!(
+        "Your final position is: {}",
+        day_two_part_two("./data/day_two_data.txt").unwrap()
+    );
 }
 
 #[derive(Debug)]
@@ -83,6 +88,33 @@ fn day_two_part_one(path: &str) -> Result<i64, std::io::Error> {
     Ok(horizontal * depth)
 }
 
+fn day_two_part_two(path: &str) -> Result<i64, std::io::Error> {
+    let values: Vec<Action> = std::fs::read_to_string(path)?
+        .split('\n')
+        .filter_map(|s| s.parse().ok())
+        .collect();
+
+    let mut horizontal = 0i64;
+    let mut depth = 0i64;
+    let mut aim = 0i64;
+    for v in values {
+        match v {
+            Action::Down(magnitude) => {
+                aim += magnitude as i64;
+            }
+            Action::Up(magnitude) => {
+                aim -= magnitude as i64;
+            }
+            Action::Forward(magnitude) => {
+                horizontal += magnitude as i64;
+                depth += aim * magnitude as i64;
+            }
+        }
+    }
+
+    Ok(horizontal * depth)
+}
+
 fn day_one_part_one(path: &str) -> Result<u64, std::io::Error> {
     let values: Vec<u32> = std::fs::read_to_string(path)?
         .split('\n')
@@ -105,7 +137,7 @@ fn day_one_part_two(path: &str) -> Result<u64, std::io::Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{day_one_part_one, day_one_part_two, day_two_part_one};
+    use crate::{day_one_part_one, day_one_part_two, day_two_part_one, day_two_part_two};
 
     #[test]
     fn day_one_part_one_example() {
@@ -123,5 +155,11 @@ mod tests {
     fn day_two_part_one_example() {
         let result = day_two_part_one("./data/day_two_example.txt").unwrap();
         assert_eq!(result, 150);
+    }
+
+    #[test]
+    fn day_two_part_two_example() {
+        let result = day_two_part_two("./data/day_two_example.txt").unwrap();
+        assert_eq!(result, 900);
     }
 }
