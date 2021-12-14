@@ -1,4 +1,5 @@
 use advent_of_code_2021::detect_increases;
+use bit_vec::BitVec;
 use itermore::IterMore;
 use std::{num::ParseIntError, str::FromStr};
 
@@ -22,6 +23,62 @@ fn main() {
         "Your final position is: {}",
         day_two_part_two("./data/day_two_data.txt").unwrap()
     );
+
+    println!(
+        "The power consumption of the submarine is: {}",
+        day_3_part_1("./data/day_3_data.txt").unwrap()
+    );
+}
+
+fn day_3_part_1(path: &str) -> Result<u64, std::io::Error> {
+    let file = std::fs::read_to_string(path)?;
+    let values: Vec<Vec<&str>> = file
+        .split('\n')
+        .filter_map(|s| {
+            if s.is_empty() {
+                None
+            } else {
+                Some(s.split("").filter(|s| !s.is_empty()).collect())
+            }
+        })
+        .collect();
+    let total_data_rows = values.len();
+    let total_data_cols = values[0].len();
+    let mut counts = vec![0usize; total_data_cols];
+    for v in values {
+        for (index, &b) in v.iter().enumerate() {
+            if "1" == b {
+                counts[index] += 1;
+            }
+        }
+    }
+
+    let tipping_point = total_data_rows / 2;
+    let gamma_bits: Vec<char> = counts
+        .iter()
+        .map(|&c| if c > tipping_point { '1' } else { '0' })
+        .collect();
+
+    let mut gamma = BitVec::from_elem(total_data_cols, false);
+    for (index, &bit) in gamma_bits.iter().enumerate() {
+        if bit == '1' {
+            gamma.set(index, true);
+        }
+    }
+
+    let mut gamma_value = 0u64;
+    let mut epsilon_value = 0u64;
+    for (index, bit) in gamma.iter().enumerate() {
+        let shift = (total_data_cols - 1) - index;
+        let value: u64 = 1 << shift;
+        if bit {
+            gamma_value |= value;
+        } else {
+            epsilon_value |= value;
+        }
+    }
+
+    Ok(gamma_value * epsilon_value)
 }
 
 #[derive(Debug)]
@@ -137,7 +194,9 @@ fn day_one_part_two(path: &str) -> Result<u64, std::io::Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{day_one_part_one, day_one_part_two, day_two_part_one, day_two_part_two};
+    use crate::{
+        day_3_part_1, day_one_part_one, day_one_part_two, day_two_part_one, day_two_part_two,
+    };
 
     #[test]
     fn day_one_part_one_example() {
@@ -161,5 +220,11 @@ mod tests {
     fn day_two_part_two_example() {
         let result = day_two_part_two("./data/day_two_example.txt").unwrap();
         assert_eq!(result, 900);
+    }
+
+    #[test]
+    fn day_3_part_1_example() {
+        let result = day_3_part_1("./data/day_3_example.txt").unwrap();
+        assert_eq!(result, 198);
     }
 }
