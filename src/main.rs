@@ -1,3 +1,4 @@
+use advent_of_code_2021::detect_increases;
 use itermore::IterMore;
 
 fn main() {
@@ -17,16 +18,8 @@ fn day_one_part_one(path: &str) -> Result<u64, std::io::Error> {
         .split('\n')
         .filter_map(|s| s.parse().ok())
         .collect();
-    let mut previous = values.get(0).unwrap();
-    let mut increases: u64 = 0;
-    for v in values.iter().skip(1) {
-        if previous < v {
-            increases += 1;
-        }
-        previous = v;
-    }
 
-    Ok(increases)
+    Ok(detect_increases(&values))
 }
 
 fn day_one_part_two(path: &str) -> Result<u64, std::io::Error> {
@@ -37,16 +30,7 @@ fn day_one_part_two(path: &str) -> Result<u64, std::io::Error> {
         .map(|[x, y, z]: [u32; 3]| x + y + z)
         .collect();
 
-    let mut previous = values.get(0).unwrap();
-    let mut increases: u64 = 0;
-    for v in values.iter().skip(1) {
-        if previous < v {
-            increases += 1;
-        }
-        previous = v;
-    }
-
-    Ok(increases)
+    Ok(detect_increases(&values))
 }
 
 #[cfg(test)]
