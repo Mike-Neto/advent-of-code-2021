@@ -53,6 +53,39 @@ fn main() {
         "There are {} points that at least two lines overlap",
         day_5_part_2("./data/day_5_data.txt").unwrap()
     );
+
+    println!(
+        "There should be {} lanternfish be after 80 days",
+        day_6_part_1("./data/day_6_data.txt", 80).unwrap()
+    );
+}
+
+#[allow(clippy::same_item_push)]
+fn day_6_part_1(path: &str, days: u32) -> Result<u64, std::io::Error> {
+    let file = std::fs::read_to_string(path)?;
+    let values: Vec<&str> = file.split('\n').filter(|s| !s.is_empty()).collect();
+    let initial_fish: Vec<i32> = values[0]
+        .split(',')
+        .filter_map(|v| v.parse().ok())
+        .collect();
+
+    let mut current_fish: Vec<i32> = initial_fish;
+    for _ in 1..=days {
+        // Simulate the day
+        let mut new_fish = 0;
+        for fish in current_fish.iter_mut() {
+            *fish -= 1;
+            if *fish == -1 {
+                *fish = 6;
+                new_fish += 1;
+            }
+        }
+        for _ in 0..new_fish {
+            current_fish.push(8);
+        }
+    }
+
+    Ok(current_fish.len() as u64)
 }
 
 fn day_5_part_2(path: &str) -> Result<u64, std::io::Error> {
@@ -120,7 +153,6 @@ fn day_5_part_2(path: &str) -> Result<u64, std::io::Error> {
             let (x_from, _x_to) = if a[0] < b[0] { (a, b) } else { (b, a) };
             let (y_from, y_to) = if a[1] < b[1] { (a, b) } else { (b, a) };
             for (index, y) in (y_from[1]..=y_to[1]).enumerate() {
-                // NOT right I need the indication of what from and to are
                 let x = if y_from[0] > y_to[0] {
                     y_from[0] as usize - index
                 } else {
@@ -593,7 +625,7 @@ fn day_one_part_two(path: &str) -> Result<u64, std::io::Error> {
 mod tests {
     use crate::{
         day_3_part_1, day_3_part_2, day_4_part_1, day_4_part_2, day_5_part_1, day_5_part_2,
-        day_one_part_one, day_one_part_two, day_two_part_one, day_two_part_two,
+        day_6_part_1, day_one_part_one, day_one_part_two, day_two_part_one, day_two_part_two,
     };
 
     #[test]
@@ -654,5 +686,13 @@ mod tests {
     fn day_5_part_2_example() {
         let result = day_5_part_2("./data/day_5_example.txt").unwrap();
         assert_eq!(result, 12);
+    }
+
+    #[test]
+    fn day_6_part_1_example() {
+        let result = day_6_part_1("./data/day_6_example.txt", 18).unwrap();
+        assert_eq!(result, 26);
+        let result = day_6_part_1("./data/day_6_example.txt", 80).unwrap();
+        assert_eq!(result, 5934);
     }
 }
