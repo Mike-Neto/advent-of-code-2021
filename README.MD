@@ -17,8 +17,16 @@ Useful but I still needed to implement to_uint methods which is kind of dumb, ma
 Kind of unnecessary as I only realized that `Vec` and not `Iterator` implement the `chunks`/`window` methods
 
 
+## array_tool
+
+Relates with my comment bellow as it has some useful functions for working with vectors & strings (intersect, uniq & join) to be specific.
+
 # Notes
 
 # &str split
 
 It's kind of annoying its default behavior, I would expect there be (just like in js) a trimmed_split / join functions
+
+# Day_06 lanternfish
+
+Would be nice to make a precomputed cache and load from disk just so we can run all things in CI. Otherwise this day takes too long to complete.
