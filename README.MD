@@ -15,3 +15,10 @@ Useful but I still needed to implement to_uint methods which is kind of dumb, ma
 ## itermore
 
 Kind of unnecessary as I only realized that `Vec` and not `Iterator` implement the `chunks`/`window` methods
+
+
+# Notes
+
+# &str split
+
+It's kind of annoying its default behavior, I would expect there be (just like in js) a trimmed_split / join functions

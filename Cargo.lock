@@ -3,6 +3,12 @@
 version = 3
 
 [[package]]
+name = "array_tool"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f8cb5d814eb646a863c4f24978cff2880c4be96ad8cde2c0f0678732902e271"
+
+[[package]]
 name = "bit-vec"
 version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -48,6 +54,9 @@ version = "0.1.0"
 [[package]]
 name = "day_08"
 version = "0.1.0"
+dependencies = [
+ "array_tool",
+]
 
 [[package]]
 name = "itermore"
