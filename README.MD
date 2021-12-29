@@ -4,7 +4,7 @@ https://adventofcode.com/2021
 
 # Run all the things
 
-    cargo fmt && cargo clippy && cargo b --release && cargo t --release && cargo r --release
+    cargo fmt && cargo clippy -- -D warnings && cargo b --release && cargo t --release && cargo r --release
 
 # Deps
 
