@@ -23,7 +23,7 @@ fn align_crabs(path: &str) -> Result<i64, std::io::Error> {
         .map(|index| {
             initial_crabs.iter().fold(0i64, |mut sum, &crab_offset| {
                 let position = index + 1;
-                sum += ((position - crab_offset as usize) as i64).abs();
+                sum += ((position as u64 - crab_offset as u64) as i64).abs();
                 sum
             })
         })
@@ -45,7 +45,7 @@ fn align_crabs_part_2(path: &str) -> Result<i64, std::io::Error> {
         .map(|index| {
             initial_crabs.iter().fold(0i64, |mut sum, &crab_offset| {
                 let position = index + 1;
-                let distance = ((position - crab_offset as usize) as i64).abs();
+                let distance = ((position as u64 - crab_offset as u64) as i64).abs();
                 sum += ((distance * distance) + distance) / 2;
                 sum
             })
