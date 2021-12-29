@@ -10,7 +10,7 @@ fn main() {
     );
 }
 
-fn align_crabs(path: &str) -> Result<i32, std::io::Error> {
+fn align_crabs(path: &str) -> Result<i64, std::io::Error> {
     let file = std::fs::read_to_string(path)?;
     let values: Vec<&str> = file.split('\n').filter(|s| !s.is_empty()).collect();
     let initial_crabs: Vec<u32> = values[0]
@@ -18,12 +18,12 @@ fn align_crabs(path: &str) -> Result<i32, std::io::Error> {
         .filter_map(|v| v.parse().ok())
         .collect();
 
-    let fuel_spent: Vec<i32> = (0..initial_crabs.len())
+    let fuel_spent: Vec<i64> = (0..initial_crabs.len())
         .into_iter()
         .map(|index| {
-            initial_crabs.iter().fold(0i32, |mut sum, &crab_offset| {
+            initial_crabs.iter().fold(0i64, |mut sum, &crab_offset| {
                 let position = index + 1;
-                sum += ((position - crab_offset as usize) as i32).abs();
+                sum += ((position - crab_offset as usize) as i64).abs();
                 sum
             })
         })
@@ -32,20 +32,20 @@ fn align_crabs(path: &str) -> Result<i32, std::io::Error> {
     Ok(fuel_spent.into_iter().min().unwrap())
 }
 
-fn align_crabs_part_2(path: &str) -> Result<i32, std::io::Error> {
+fn align_crabs_part_2(path: &str) -> Result<i64, std::io::Error> {
     let file = std::fs::read_to_string(path)?;
     let values: Vec<&str> = file.split('\n').filter(|s| !s.is_empty()).collect();
-    let initial_crabs: Vec<i32> = values[0]
+    let initial_crabs: Vec<i64> = values[0]
         .split(',')
         .filter_map(|v| v.parse().ok())
         .collect();
 
-    let fuel_spent: Vec<i32> = (0..initial_crabs.len())
+    let fuel_spent: Vec<i64> = (0..initial_crabs.len())
         .into_iter()
         .map(|index| {
-            initial_crabs.iter().fold(0i32, |mut sum, &crab_offset| {
+            initial_crabs.iter().fold(0i64, |mut sum, &crab_offset| {
                 let position = index + 1;
-                let distance = ((position - crab_offset as usize) as i32).abs();
+                let distance = ((position - crab_offset as usize) as i64).abs();
                 sum += ((distance * distance) + distance) / 2;
                 sum
             })
