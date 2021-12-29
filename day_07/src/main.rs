@@ -13,7 +13,7 @@ fn main() {
 fn align_crabs(path: &str) -> Result<i64, std::io::Error> {
     let file = std::fs::read_to_string(path)?;
     let values: Vec<&str> = file.split('\n').filter(|s| !s.is_empty()).collect();
-    let initial_crabs: Vec<u32> = values[0]
+    let initial_crabs: Vec<i64> = values[0]
         .split(',')
         .filter_map(|v| v.parse().ok())
         .collect();
@@ -23,7 +23,8 @@ fn align_crabs(path: &str) -> Result<i64, std::io::Error> {
         .map(|index| {
             initial_crabs.iter().fold(0i64, |mut sum, &crab_offset| {
                 let position = index + 1;
-                sum += ((position as u64 - crab_offset as u64) as i64).abs();
+                let result = i64::try_from(position).unwrap() - crab_offset;
+                sum += result.abs();
                 sum
             })
         })
@@ -45,7 +46,8 @@ fn align_crabs_part_2(path: &str) -> Result<i64, std::io::Error> {
         .map(|index| {
             initial_crabs.iter().fold(0i64, |mut sum, &crab_offset| {
                 let position = index + 1;
-                let distance = ((position as u64 - crab_offset as u64) as i64).abs();
+                let result = i64::try_from(position).unwrap() - crab_offset;
+                let distance = result.abs();
                 sum += ((distance * distance) + distance) / 2;
                 sum
             })
