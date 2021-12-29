@@ -35,7 +35,7 @@ fn day_5_part_2(path: &str) -> Result<u64, std::io::Error> {
 
     let max_point = lines.iter().flatten().flatten().max().unwrap() + 1;
 
-    let mut overlap_grid = vec![vec![0u32; max_point as usize]; max_point as usize];
+    let mut overlap_grid = vec![vec![0_u32; max_point as usize]; max_point as usize];
 
     for line in lines {
         let a = &line[0];
@@ -44,7 +44,18 @@ fn day_5_part_2(path: &str) -> Result<u64, std::io::Error> {
         let same_x = a[0] != b[0];
         let same_y = a[1] != b[1];
         let is_diagonal = same_x && same_y;
-        if !is_diagonal {
+        if is_diagonal {
+            let (x_from, _x_to) = if a[0] < b[0] { (a, b) } else { (b, a) };
+            let (y_from, y_to) = if a[1] < b[1] { (a, b) } else { (b, a) };
+            for (index, y) in (y_from[1]..=y_to[1]).enumerate() {
+                let x = if y_from[0] > y_to[0] {
+                    y_from[0] as usize - index
+                } else {
+                    x_from[0] as usize + index
+                };
+                overlap_grid[y as usize][x] += 1;
+            }
+        } else {
             if same_x {
                 for x in a[0]..=b[0] {
                     let y = a[1] as usize;
@@ -71,28 +82,20 @@ fn day_5_part_2(path: &str) -> Result<u64, std::io::Error> {
                     overlap_grid[y as usize][x] += 1;
                 }
             }
-        } else {
-            let (x_from, _x_to) = if a[0] < b[0] { (a, b) } else { (b, a) };
-            let (y_from, y_to) = if a[1] < b[1] { (a, b) } else { (b, a) };
-            for (index, y) in (y_from[1]..=y_to[1]).enumerate() {
-                let x = if y_from[0] > y_to[0] {
-                    y_from[0] as usize - index
-                } else {
-                    x_from[0] as usize + index
-                };
-                overlap_grid[y as usize][x] += 1;
-            }
         }
     }
 
-    let total = overlap_grid.iter().flatten().fold(0u32, |mut sum, &value| {
-        if value >= 2 {
-            sum += 1
-        }
-        sum
-    });
+    let total = overlap_grid
+        .iter()
+        .flatten()
+        .fold(0_u32, |mut sum, &value| {
+            if value >= 2 {
+                sum += 1;
+            }
+            sum
+        });
 
-    Ok(total as u64)
+    Ok(u64::from(total))
 }
 
 fn day_5_part_1(path: &str) -> Result<u64, std::io::Error> {
@@ -120,7 +123,7 @@ fn day_5_part_1(path: &str) -> Result<u64, std::io::Error> {
 
     let max_point = lines.iter().flatten().flatten().max().unwrap() + 1;
 
-    let mut overlap_grid = vec![vec![0u32; max_point as usize]; max_point as usize];
+    let mut overlap_grid = vec![vec![0_u32; max_point as usize]; max_point as usize];
 
     for line in lines {
         let a = &line[0];
@@ -158,14 +161,17 @@ fn day_5_part_1(path: &str) -> Result<u64, std::io::Error> {
         }
     }
 
-    let total = overlap_grid.iter().flatten().fold(0u32, |mut sum, &value| {
-        if value >= 2 {
-            sum += 1
-        }
-        sum
-    });
+    let total = overlap_grid
+        .iter()
+        .flatten()
+        .fold(0_u32, |mut sum, &value| {
+            if value >= 2 {
+                sum += 1;
+            }
+            sum
+        });
 
-    Ok(total as u64)
+    Ok(u64::from(total))
 }
 
 #[cfg(test)]

@@ -38,16 +38,15 @@ fn day_4_part_2(path: &str) -> Result<u64, std::io::Error> {
     let mut incomplete_boards: Vec<&Vec<Vec<u32>>> = boards.iter().collect();
     for i in 0..(draw_numbers.len() - 1) {
         let numbers = &draw_numbers[0..i];
-        let mut removed = 0usize;
+        let mut removed = 0_usize;
         for (index, board) in incomplete_boards.clone().iter().enumerate() {
             let bingo = calculate_bingo(numbers, board);
             if let Some(score) = bingo {
                 if incomplete_boards.len() == 1 {
-                    return Ok(score as u64);
-                } else {
-                    incomplete_boards.remove(index - removed);
-                    removed += 1;
+                    return Ok(u64::from(score));
                 }
+                incomplete_boards.remove(index - removed);
+                removed += 1;
             }
         }
     }
@@ -83,7 +82,7 @@ fn day_4_part_1(path: &str) -> Result<u64, std::io::Error> {
         for board in &boards {
             let bingo = calculate_bingo(numbers, board);
             if let Some(score) = bingo {
-                return Ok(score as u64);
+                return Ok(u64::from(score));
             }
         }
     }
@@ -120,17 +119,17 @@ fn calculate_bingo(numbers: &[u32], board: &[Vec<u32>]) -> Option<u32> {
                 row.iter()
                     .enumerate()
                     .map(move |(col_index, &value)| {
-                        if !value {
-                            board[row_index][col_index]
-                        } else {
+                        if value {
                             0
+                        } else {
+                            board[row_index][col_index]
                         }
                     })
                     .collect()
             })
             .collect();
-        let sum: u32 = unmarked_matrix.iter().fold(0u32, |mut sum, row| {
-            sum += row.iter().fold(0u32, |mut sum, value| {
+        let sum: u32 = unmarked_matrix.iter().fold(0_u32, |mut sum, row| {
+            sum += row.iter().fold(0_u32, |mut sum, value| {
                 sum += value;
                 sum
             });

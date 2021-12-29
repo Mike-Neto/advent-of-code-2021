@@ -40,11 +40,11 @@ impl FromStr for Action {
             .map_err(|err: ParseIntError| ParseActionError::Magnitude(err.to_string()))?;
 
         if action == "forward" {
-            Ok(Action::Forward(magnitude))
+            Ok(Self::Forward(magnitude))
         } else if action == "down" {
-            Ok(Action::Down(magnitude))
+            Ok(Self::Down(magnitude))
         } else if action == "up" {
-            Ok(Action::Up(magnitude))
+            Ok(Self::Up(magnitude))
         } else {
             Err(ParseActionError::Action(action.to_string()))
         }
@@ -57,18 +57,18 @@ fn day_two_part_one(path: &str) -> Result<i64, std::io::Error> {
         .filter_map(|s| s.parse().ok())
         .collect();
 
-    let mut horizontal = 0i64;
-    let mut depth = 0i64;
+    let mut horizontal = 0_i64;
+    let mut depth = 0_i64;
     for v in values {
         match v {
             Action::Down(magnitude) => {
-                depth += magnitude as i64;
+                depth += i64::from(magnitude);
             }
             Action::Up(magnitude) => {
-                depth -= magnitude as i64;
+                depth -= i64::from(magnitude);
             }
             Action::Forward(magnitude) => {
-                horizontal += magnitude as i64;
+                horizontal += i64::from(magnitude);
             }
         }
     }
@@ -82,20 +82,20 @@ fn day_two_part_two(path: &str) -> Result<i64, std::io::Error> {
         .filter_map(|s| s.parse().ok())
         .collect();
 
-    let mut horizontal = 0i64;
-    let mut depth = 0i64;
-    let mut aim = 0i64;
+    let mut horizontal = 0_i64;
+    let mut depth = 0_i64;
+    let mut aim = 0_i64;
     for v in values {
         match v {
             Action::Down(magnitude) => {
-                aim += magnitude as i64;
+                aim += i64::from(magnitude);
             }
             Action::Up(magnitude) => {
-                aim -= magnitude as i64;
+                aim -= i64::from(magnitude);
             }
             Action::Forward(magnitude) => {
-                horizontal += magnitude as i64;
-                depth += aim * magnitude as i64;
+                horizontal += i64::from(magnitude);
+                depth += aim * i64::from(magnitude);
             }
         }
     }

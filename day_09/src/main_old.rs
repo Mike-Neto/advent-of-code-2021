@@ -117,7 +117,7 @@ fn sum_risk_levels(path: &str) -> Result<usize, std::io::Error> {
     let sum = low_points
         .iter()
         .map(|point| point + 1)
-        .fold(0usize, |mut sum, value| {
+        .fold(0_usize, |mut sum, value| {
             sum += value as usize;
             sum
         });

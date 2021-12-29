@@ -26,7 +26,7 @@ fn day_3_part_1(path: &str) -> Result<u64, std::io::Error> {
         .collect();
     let total_data_rows = values.len();
     let total_data_cols = values[0].len();
-    let mut counts = vec![0usize; total_data_cols];
+    let mut counts = vec![0_usize; total_data_cols];
     for v in values {
         for (index, &b) in v.iter().enumerate() {
             if "1" == b {
@@ -48,8 +48,8 @@ fn day_3_part_1(path: &str) -> Result<u64, std::io::Error> {
         }
     }
 
-    let mut gamma_value = 0u64;
-    let mut epsilon_value = 0u64;
+    let mut gamma_value = 0_u64;
+    let mut epsilon_value = 0_u64;
     for (index, bit) in gamma.iter().enumerate() {
         let shift = (total_data_cols - 1) - index;
         let value: u64 = 1 << shift;
@@ -76,7 +76,7 @@ fn day_3_part_2(path: &str) -> Result<u64, std::io::Error> {
         })
         .collect();
 
-    let mut current_bit = 0usize;
+    let mut current_bit = 0_usize;
     let mut current_values: Vec<&Vec<&str>> = values.iter().collect();
     while current_values.len() != 1 && !current_values.is_empty() {
         current_values = filter_values(current_values, current_bit, true);
@@ -84,7 +84,7 @@ fn day_3_part_2(path: &str) -> Result<u64, std::io::Error> {
     }
     let oxygen = bits_to_u64(current_values[0]);
 
-    let mut current_bit = 0usize;
+    current_bit = 0_usize;
     let mut current_values: Vec<&Vec<&str>> = values.iter().collect();
     while current_values.len() != 1 && !current_values.is_empty() {
         current_values = filter_values(current_values, current_bit, false);
@@ -96,7 +96,7 @@ fn day_3_part_2(path: &str) -> Result<u64, std::io::Error> {
 }
 
 fn bits_to_u64(chars: &[&str]) -> u64 {
-    let mut result = 0u64;
+    let mut result = 0_u64;
     for (index, &bit) in chars.iter().enumerate() {
         if bit == "1" {
             let shift = (chars.len() - 1) - index;

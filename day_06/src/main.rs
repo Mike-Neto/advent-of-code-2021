@@ -41,11 +41,11 @@ mod tests {
 
     #[test]
     fn simulate_fish_example() {
-        let result = simulate_fish("day_6_example.txt", 18).unwrap();
+        let mut result = simulate_fish("day_6_example.txt", 18).unwrap();
         assert_eq!(result, 26);
-        let result = simulate_fish("day_6_example.txt", 80).unwrap();
+        result = simulate_fish("day_6_example.txt", 80).unwrap();
         assert_eq!(result, 5934);
-        let result = simulate_fish("day_6_example.txt", 256).unwrap();
-        assert_eq!(result, 26984457539);
+        result = simulate_fish("day_6_example.txt", 256).unwrap();
+        assert_eq!(result, 26_984_457_539);
     }
 }

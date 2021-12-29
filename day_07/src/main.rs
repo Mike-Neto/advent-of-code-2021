@@ -21,7 +21,7 @@ fn align_crabs(path: &str) -> Result<i64, std::io::Error> {
     let fuel_spent: Vec<i64> = (0..initial_crabs.len())
         .into_iter()
         .map(|index| {
-            initial_crabs.iter().fold(0i64, |mut sum, &crab_offset| {
+            initial_crabs.iter().fold(0_i64, |mut sum, &crab_offset| {
                 let position = index + 1;
                 let result = i64::try_from(position).unwrap() - crab_offset;
                 sum += result.abs();
@@ -44,7 +44,7 @@ fn align_crabs_part_2(path: &str) -> Result<i64, std::io::Error> {
     let fuel_spent: Vec<i64> = (0..initial_crabs.len())
         .into_iter()
         .map(|index| {
-            initial_crabs.iter().fold(0i64, |mut sum, &crab_offset| {
+            initial_crabs.iter().fold(0_i64, |mut sum, &crab_offset| {
                 let position = index + 1;
                 let result = i64::try_from(position).unwrap() - crab_offset;
                 let distance = result.abs();
