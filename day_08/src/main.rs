@@ -131,8 +131,6 @@ fn sum_output_values(path: &str) -> Result<usize, std::io::Error> {
                     })
                     .collect();
 
-                println!("{:?}", segment_values);
-
                 let value = segment_values.iter().rev().enumerate().fold(
                     0usize,
                     |mut acc, (index, &digit)| {

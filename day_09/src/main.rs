@@ -1,59 +1,104 @@
-fn main() {
-    println!(
-        "The sum of the risk levels of all low points is: {}",
-        sum_risk_levels("data.txt").unwrap()
-    );
+// Copied from https://github.com/ManevilleF/AdventOfCode2021 as I was getting nowhere with my impl
+// and didn't feel like understanding adjacencies code :^)
+
+use std::str::FromStr;
+
+const FILE_PATH: &str = "data.txt";
+
+type Coords = (usize, usize);
+
+#[derive(Debug, Clone)]
+struct HeightMap(Vec<Vec<u8>>);
+
+impl FromStr for HeightMap {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self(
+            s.lines()
+                .map(|line| {
+                    line.chars()
+                        .map(|c| {
+                            c.to_digit(10)
+                                .and_then(|d| d.try_into().ok())
+                                .ok_or(format!("Invalid line: {}", line))
+                        })
+                        .collect()
+                })
+                .collect::<Result<Vec<Vec<u8>>, Self::Err>>()?,
+        ))
+    }
 }
 
-fn sum_risk_levels(path: &str) -> Result<usize, std::io::Error> {
-    let file = std::fs::read_to_string(path)?;
+impl HeightMap {
+    fn neighbors_at(&self, (x, y): Coords) -> Vec<(Coords, u8)> {
+        [usize::checked_add, usize::checked_sub]
+            .iter()
+            .flat_map(|op| {
+                [(1, 0), (0, 1)]
+                    .iter()
+                    .filter_map(|(dx, dy)| {
+                        let (x, y) = (op(x, *dx)?, op(y, *dy)?);
+                        let digit = self.0.get(y)?.get(x)?;
+                        Some(((x, y), *digit))
+                    })
+                    .collect::<Vec<(Coords, u8)>>()
+            })
+            .collect()
+    }
 
-    let height_map: Vec<Vec<u8>> = file
-        .split('\n')
-        .filter(|s| !s.is_empty())
-        .map(|line| line.split("").filter_map(|v| v.parse().ok()).collect())
-        .collect();
+    fn low_points(&self) -> Vec<(Coords, u8)> {
+        self.0
+            .iter()
+            .enumerate()
+            .flat_map(|(y, line)| {
+                line.iter()
+                    .enumerate()
+                    .filter(|(x, digit)| {
+                        self.neighbors_at((*x, y))
+                            .iter()
+                            .all(|(_coords, n)| n > digit)
+                    })
+                    .map(|(x, digit)| ((x, y), *digit))
+                    .collect::<Vec<(Coords, u8)>>()
+            })
+            .collect()
+    }
 
-    let max_row_index = height_map.len() - 1;
-    let max_col_index = height_map[0].len() - 1;
-    let mut low_points: Vec<u8> = vec![];
-    for (row_index, row) in height_map.iter().enumerate() {
-        for (col_index, &value) in row.iter().enumerate() {
-            let is_lower_than_up =
-                row_index > 0 && height_map[row_index - 1][col_index] > value || row_index == 0;
-            let is_lower_than_right = col_index < max_col_index
-                && height_map[row_index][col_index + 1] > value
-                || col_index == max_col_index;
-            let is_lower_than_down = row_index < max_row_index
-                && height_map[row_index + 1][col_index] > value
-                || row_index == max_row_index;
-            let is_lower_than_left =
-                col_index > 0 && height_map[row_index][col_index - 1] > value || col_index == 0;
-
-            if is_lower_than_down && is_lower_than_up && is_lower_than_right && is_lower_than_left {
-                low_points.push(value);
-            }
+    fn basin_at(&self, coords: Coords, basin: &mut Vec<Coords>) {
+        if basin.contains(&coords) {
+            return;
         }
+        basin.push(coords);
+        self.neighbors_at(coords)
+            .into_iter()
+            .filter(|(_coords, d)| *d < 9)
+            .for_each(|(coords, _d)| self.basin_at(coords, basin));
     }
 
-    let sum = low_points
-        .iter()
-        .map(|point| point + 1)
-        .fold(0usize, |mut sum, value| {
-            sum += value as usize;
-            sum
-        });
-
-    Ok(sum)
+    fn basin_sizes(&self) -> usize {
+        let mut sizes: Vec<usize> = self
+            .low_points()
+            .iter()
+            .map(|(coord, _d)| {
+                let mut basin = vec![];
+                self.basin_at(*coord, &mut basin);
+                basin.len()
+            })
+            .collect();
+        sizes.sort_unstable();
+        (0..3).filter_map(|_| sizes.pop()).product()
+    }
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::sum_risk_levels;
-
-    #[test]
-    fn sum_risk_levels_example() {
-        let result = sum_risk_levels("example.txt").unwrap();
-        assert_eq!(result, 15);
-    }
+fn main() {
+    let map = HeightMap::from_str(std::fs::read_to_string(FILE_PATH).unwrap().as_str()).unwrap();
+    println!(
+        "Part1: risk level = {}",
+        map.low_points()
+            .iter()
+            .map(|(_, digit)| u32::from(*digit) + 1)
+            .sum::<u32>()
+    );
+    println!("Part2: basin sizes = {}", map.basin_sizes());
 }

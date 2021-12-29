@@ -30,3 +30,11 @@ It's kind of annoying its default behavior, I would expect there be (just like i
 # Day_06 lanternfish
 
 Would be nice to make a precomputed cache and load from disk just so we can run all things in CI. Otherwise this day takes too long to complete.
+
+# Vec<Vec<Number>>
+
+Kind of wish for a crate that would give me a simple layer on top of that and allowed for some more unusual iterators, like perimeter or cross and would bounds check tem and all of that.
+
+# Num types
+
+50% of what I do is fighting the type system about the precision & overflow of numbers, kind of wish I could do away with it in some form (always use f32 or something)
